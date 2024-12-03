@@ -7,22 +7,22 @@
 </head>
 <body>
     <h1>¡Hello world from HTML, WSVARGAS SI08! developers</h1>
-
     <p>Nombre de host: <span id="hostname"></span></p>
     <p>IP interna: <span id="internal-ip"></span></p>
 
     <script>
+        // Mostrar el hostname del balanceador
         var hostname = window.location.hostname;
         document.getElementById("hostname").innerHTML = hostname;
 
-        // Obtener IP interna de un archivo generado dinámicamente
-        fetch('/internal-ip')
+        // Obtener la IP interna directamente desde los metadatos de EC2
+        fetch('http://169.254.169.254/latest/meta-data/local-ipv4')
             .then(response => response.text())
             .then(ip => {
                 document.getElementById("internal-ip").innerHTML = ip;
             })
-            .catch(err => {
-                document.getElementById("internal-ip").innerHTML = "No disponible";
+            .catch(error => {
+                document.getElementById("internal-ip").innerHTML = "Error obteniendo IP";
             });
     </script>
 </body>
