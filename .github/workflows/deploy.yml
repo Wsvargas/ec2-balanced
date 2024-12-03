@@ -104,4 +104,3 @@ jobs:
         with:
           
           workflow: 'qa.yml'  # El nombre de tu archivo de flujo de trabajo en la misma carpeta
-          ref: 'test'  # La rama en la que   asdad  deseas ejecutar el flujo de trabajo, ajusta si es necesario

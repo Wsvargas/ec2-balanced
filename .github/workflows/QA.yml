@@ -1,0 +1,59 @@
+name: Deploy to EC2 (QA)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - test
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER2_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ec2-54-159-193-221.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+          ssh-keyscan -H ec2-44-203-5-23.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+
+      - name: Deploy to QA1
+        if: github.ref == 'refs/heads/test'
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-159-193-221.compute-1.amazonaws.com << 'EOF'
+            cd /home/ubuntu
+            if [ ! -d "ec2-balanced" ]; then
+              git clone https://github.com/Wsvargas/ec2-balanced.git
+              cd ec2-balanced
+            else
+              cd ec2-balanced
+              git pull origin test
+            fi
+            sudo cp index.html /var/www/html/
+            sudo systemctl restart apache2
+          EOF
+
+      - name: Deploy to QA2
+        if: github.ref == 'refs/heads/test'
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-44-203-5-23.compute-1.amazonaws.com << 'EOF'
+            cd /home/ubuntu
+            if [ ! -d "ec2-balanced" ]; then
+              git clone https://github.com/Wsvargas/ec2-balanced.git
+              cd ec2-balanced
+            else
+              cd ec2-balanced
+              git pull origin test
+            fi
+            sudo cp index.html /var/www/html/
+            sudo systemctl restart apache2
+          EOF
+
+      - name: Validate Load Balancer
+        run: |
+          curl -I http://QA-ALB-1682985030.us-east-1.elb.amazonaws.com | grep "200 OK"
