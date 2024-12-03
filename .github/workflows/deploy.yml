@@ -93,3 +93,6 @@ jobs:
             fi
             sudo systemctl restart apache2
           EOF
+          - name: Validate Load Balancer
+          run: |
+            curl -I http://<Dev-ALB-DNS> | grep "200 OK"
