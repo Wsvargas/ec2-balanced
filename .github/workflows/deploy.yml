@@ -29,39 +29,67 @@ jobs:
       - name: Deploy to Desarrollo1
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@ec2-44-203-60-54.compute-1.amazonaws.com << 'EOF'
-            cd /var/www/html || git clone https://github.com/Wsvargas/ec2-balanced.git
-            cd ec2-balanced
-            git pull origin main
-            sudo cp index.html /var/www/html/
+            cd /home/ubuntu
+            if [ ! -d "ec2-balanced" ]; then
+              git clone https://github.com/Wsvargas/ec2-balanced.git
+              cd ec2-balanced
+            else
+              cd ec2-balanced
+              git pull origin main
+            fi
+            if ! cmp -s index.html /var/www/html/index.html; then
+              sudo cp index.html /var/www/html/
+            fi
             sudo systemctl restart apache2
           EOF
 
       - name: Deploy to Desarrollo2
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-82-163-150.compute-1.amazonaws.com << 'EOF'
-            cd /var/www/html || git clone https://github.com/Wsvargas/ec2-balanced.git
-            cd ec2-balanced
-            git pull origin main
-            sudo cp index.html /var/www/html/
+            cd /home/ubuntu
+            if [ ! -d "ec2-balanced" ]; then
+              git clone https://github.com/Wsvargas/ec2-balanced.git
+              cd ec2-balanced
+            else
+              cd ec2-balanced
+              git pull origin main
+            fi
+            if ! cmp -s index.html /var/www/html/index.html; then
+              sudo cp index.html /var/www/html/
+            fi
             sudo systemctl restart apache2
           EOF
 
       - name: Deploy to Desarrollo3
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-84-140-143.compute-1.amazonaws.com << 'EOF'
-            cd /var/www/html || git clone https://github.com/Wsvargas/ec2-balanced.git
-            cd ec2-balanced
-            git pull origin main
-            sudo cp index.html /var/www/html/
+            cd /home/ubuntu
+            if [ ! -d "ec2-balanced" ]; then
+              git clone https://github.com/Wsvargas/ec2-balanced.git
+              cd ec2-balanced
+            else
+              cd ec2-balanced
+              git pull origin main
+            fi
+            if ! cmp -s index.html /var/www/html/index.html; then
+              sudo cp index.html /var/www/html/
+            fi
             sudo systemctl restart apache2
           EOF
 
       - name: Deploy to Desarrollo4
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-174-205-227.compute-1.amazonaws.com << 'EOF'
-            cd /var/www/html || git clone https://github.com/Wsvargas/ec2-balanced.git
-            cd ec2-balanced
-            git pull origin main
-            sudo cp index.html /var/www/html/
+            cd /home/ubuntu
+            if [ ! -d "ec2-balanced" ]; then
+              git clone https://github.com/Wsvargas/ec2-balanced.git
+              cd ec2-balanced
+            else
+              cd ec2-balanced
+              git pull origin main
+            fi
+            if ! cmp -s index.html /var/www/html/index.html; then
+              sudo cp index.html /var/www/html/
+            fi
             sudo systemctl restart apache2
           EOF
