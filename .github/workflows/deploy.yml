@@ -100,7 +100,7 @@ jobs:
               # Paso 4: Llamar a otro flujo de trabajo al finalizar este
       # Paso 4: Disparar el flujo de trabajo 'qa.yml' en el repositorio
       - name: Trigger QA workflow
-        uses: pctions/checkout@v2
+        uses: actions/checkout@v2
         with:
           
           workflow: 'qa.yml'  # El nombre de tu archivo de flujo de trabajo en la misma carpeta
