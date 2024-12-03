@@ -56,4 +56,4 @@ jobs:
 
       - name: Validate Load Balancer
         run: |
-          curl -I http://<QA-ALB-DNS> | grep "200 OK"
+          curl -I http://QA-ALB-1682985030.us-east-1.elb.amazonaws.com | grep "200 OK"

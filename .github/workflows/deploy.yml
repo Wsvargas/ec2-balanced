@@ -95,4 +95,4 @@ jobs:
           EOF
       - name: Validate Load Balancer
         run: |
-          curl -I http://<Dev-ALB-DNS> | grep "200 OK"
+          curl -I http://Dev-ALB-1527302763.us-east-1.elb.amazonaws.com | grep "200 OK"
