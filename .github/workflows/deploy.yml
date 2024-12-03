@@ -1,0 +1,107 @@
+name: Deploy to EC2 (Desarrollo)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Hacer checkout del repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Paso 2: Configurar la clave SSH para conectar con las instancias EC2
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER2_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ec2-54-211-132-145.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+          ssh-keyscan -H ec2-54-196-56-49.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+          ssh-keyscan -H ec2-54-196-38-145.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+          ssh-keyscan -H ec2-54-234-189-217.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+
+      # Paso 3: Desplegar en las instancias
+      - name: Deploy to Desarrollo1
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-211-132-145.compute-1.amazonaws.com << 'EOF'
+            cd /home/ubuntu
+            if [ ! -d "ec2-balanced" ]; then
+              git clone https://github.com/Wsvargas/ec2-balanced.git
+            fi
+            cd ec2-balanced
+            git pull origin main
+
+            if [ ! -f /var/www/html/index.html ] || ! cmp -s index.html /var/www/html/index.html; then
+              sudo cp index.html /var/www/html/
+            fi
+
+            echo "$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)" | sudo tee /var/www/html/internal-ip > /dev/null
+            sudo systemctl restart apache2
+          EOF
+
+      - name: Deploy to Desarrollo2
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-196-56-49.compute-1.amazonaws.com << 'EOF'
+            cd /home/ubuntu
+            if [ ! -d "ec2-balanced" ]; then
+              git clone https://github.com/Wsvargas/ec2-balanced.git
+            fi
+            cd ec2-balanced
+            git pull origin main
+
+            if [ ! -f /var/www/html/index.html ] || ! cmp -s index.html /var/www/html/index.html; then
+              sudo cp index.html /var/www/html/
+            fi
+
+            echo "$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)" | sudo tee /var/www/html/internal-ip > /dev/null
+            sudo systemctl restart apache2
+          EOF
+
+      - name: Deploy to Desarrollo3
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-196-38-145.compute-1.amazonaws.com << 'EOF'
+            cd /home/ubuntu
+            if [ ! -d "ec2-balanced" ]; then
+              git clone https://github.com/Wsvargas/ec2-balanced.git
+            fi
+            cd ec2-balanced
+            git pull origin main
+
+            if [ ! -f /var/www/html/index.html ] || ! cmp -s index.html /var/www/html/index.html; then
+              sudo cp index.html /var/www/html/
+            fi
+
+            echo "$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)" | sudo tee /var/www/html/internal-ip > /dev/null
+            sudo systemctl restart apache2
+          EOF
+
+      - name: Deploy to Desarrollo4
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-234-189-217.compute-1.amazonaws.com << 'EOF'
+            cd /home/ubuntu
+            if [ ! -d "ec2-balanced" ]; then
+              git clone https://github.com/Wsvargas/ec2-balanced.git
+            fi
+            cd ec2-balanced
+            git pull origin main
+
+            if [ ! -f /var/www/html/index.html ] || ! cmp -s index.html /var/www/html/index.html; then
+              sudo cp index.html /var/www/html/
+            fi
+
+            echo "$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)" | sudo tee /var/www/html/internal-ip > /dev/null
+            sudo systemctl restart apache2
+          EOF
+              # Paso 4: Llamar a otro flujo de trabajo al finalizar este
+      # Paso 4: Disparar el flujo de trabajo 'qa.yml' en el repositorio
+      - name: Trigger QA workflow
+        uses: actions/checkout@v2
+        with:
+          
+          workflow: 'qa.yml'  # El nombre de tu archivo de flujo de trabajo en la misma carpeta
+          ref: 'test'  # La rama en la que   asdad  deseas ejecutar el flujo de trabajo, ajusta si es necesario
