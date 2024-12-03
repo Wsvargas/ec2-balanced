@@ -43,3 +43,8 @@ jobs:
             sudo cp index.html /var/www/html/
             sudo systemctl restart apache2
           EOF
+
+           # Validar el balanceador de QA
+      - name: Validate Load Balancer
+        run: |
+          curl -I http://<QA-ALB-DNS> | grep "200 OK"
