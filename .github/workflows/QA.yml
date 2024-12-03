@@ -19,16 +19,21 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SERVER2_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ec2-44-201-243-225.compute-1.amazonaws.com ~/.ssh/known_hosts
-          ssh-keyscan -H ec2-34-238-249-71.compute-1.amazonaws.com ~/.ssh/known_hosts
+          ssh-keyscan -H ec2-44-201-243-225.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+          ssh-keyscan -H ec2-34-238-249-71.compute-1.amazonaws.com >> ~/.ssh/known_hosts
 
       - name: Deploy to QA1
         if: github.ref == 'refs/heads/test'
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@<IP_QA1> << 'EOF'
-            cd /var/www/html || git clone https://github.com/Wsvargas/ec2-balanced.git
-            cd ec2-balanced
-            git pull origin test
+          ssh -o StrictHostKeyChecking=no ubuntu@44.201.243.225 << 'EOF'
+            cd /home/ubuntu
+            if [ ! -d "ec2-balanced" ]; then
+              git clone https://github.com/Wsvargas/ec2-balanced.git
+              cd ec2-balanced
+            else
+              cd ec2-balanced
+              git pull origin test
+            fi
             sudo cp index.html /var/www/html/
             sudo systemctl restart apache2
           EOF
@@ -36,15 +41,19 @@ jobs:
       - name: Deploy to QA2
         if: github.ref == 'refs/heads/test'
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@<IP_QA2> << 'EOF'
-            cd /var/www/html || git clone https://github.com/Wsvargas/ec2-balanced.git
-            cd ec2-balanced
-            git pull origin test
+          ssh -o StrictHostKeyChecking=no ubuntu@34.238.249.71 << 'EOF'
+            cd /home/ubuntu
+            if [ ! -d "ec2-balanced" ]; then
+              git clone https://github.com/Wsvargas/ec2-balanced.git
+              cd ec2-balanced
+            else
+              cd ec2-balanced
+              git pull origin test
+            fi
             sudo cp index.html /var/www/html/
             sudo systemctl restart apache2
           EOF
 
-           # Validar el balanceador de QA
       - name: Validate Load Balancer
         run: |
           curl -I http://<QA-ALB-DNS> | grep "200 OK"
