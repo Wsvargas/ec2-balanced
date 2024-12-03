@@ -32,15 +32,14 @@ jobs:
             cd /home/ubuntu
             if [ ! -d "ec2-balanced" ]; then
               git clone https://github.com/Wsvargas/ec2-balanced.git
-              cd ec2-balanced
-            else
-              cd ec2-balanced
-              git pull origin main
             fi
-            if ! cmp -s index.html /var/www/html/index.html; then
+            cd ec2-balanced
+            git pull origin main
+
+            if [ ! -f /var/www/html/index.html ] || ! cmp -s index.html /var/www/html/index.html; then
               sudo cp index.html /var/www/html/
             fi
-            # Generar el archivo /internal-ip con la IP interna
+
             echo "$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)" | sudo tee /var/www/html/internal-ip > /dev/null
             sudo systemctl restart apache2
           EOF
@@ -51,15 +50,14 @@ jobs:
             cd /home/ubuntu
             if [ ! -d "ec2-balanced" ]; then
               git clone https://github.com/Wsvargas/ec2-balanced.git
-              cd ec2-balanced
-            else
-              cd ec2-balanced
-              git pull origin main
             fi
-            if ! cmp -s index.html /var/www/html/index.html; then
+            cd ec2-balanced
+            git pull origin main
+
+            if [ ! -f /var/www/html/index.html ] || ! cmp -s index.html /var/www/html/index.html; then
               sudo cp index.html /var/www/html/
             fi
-            # Generar el archivo /internal-ip con la IP interna
+
             echo "$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)" | sudo tee /var/www/html/internal-ip > /dev/null
             sudo systemctl restart apache2
           EOF
@@ -70,16 +68,15 @@ jobs:
             cd /home/ubuntu
             if [ ! -d "ec2-balanced" ]; then
               git clone https://github.com/Wsvargas/ec2-balanced.git
-              cd ec2-balanced
-            else
-              cd ec2-balanced
-              git pull origin main
             fi
-            if ! cmp -s index.html /var/www/html/index.html; then
+            cd ec2-balanced
+            git pull origin main
+
+            if [ ! -f /var/www/html/index.html ] || ! cmp -s index.html /var/www/html/index.html; then
               sudo cp index.html /var/www/html/
             fi
+
             echo "$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)" | sudo tee /var/www/html/internal-ip > /dev/null
-            
             sudo systemctl restart apache2
           EOF
 
@@ -89,15 +86,14 @@ jobs:
             cd /home/ubuntu
             if [ ! -d "ec2-balanced" ]; then
               git clone https://github.com/Wsvargas/ec2-balanced.git
-              cd ec2-balanced
-            else
-              cd ec2-balanced
-              git pull origin main
             fi
-            if ! cmp -s index.html /var/www/html/index.html; then
+            cd ec2-balanced
+            git pull origin main
+
+            if [ ! -f /var/www/html/index.html ] || ! cmp -s index.html /var/www/html/index.html; then
               sudo cp index.html /var/www/html/
             fi
-            echo "$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)" | sudo tee /var/www/html/internal-ip > /dev/null
 
+            echo "$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)" | sudo tee /var/www/html/internal-ip > /dev/null
             sudo systemctl restart apache2
           EOF
